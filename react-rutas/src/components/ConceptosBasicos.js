@@ -1,5 +1,7 @@
 import {
   BrowserRouter as Router,
+  HashRouter,
+  Link,
   Navigate,
   Route,
   Routes,
@@ -20,6 +22,16 @@ import PrivateRoute from "./PrivateRoute";
 const ConceptosBasicos = () => {
   return (
     <div>
+      <h2>hash router</h2>
+      <HashRouter>
+        <nav>
+          <Link to="/">Home</Link>
+          <Link to="/acerca">acerca</Link>
+          <Link to="/contacto">contacto</Link>
+        </nav>
+        <Routes></Routes>
+      </HashRouter>
+      <hr />
       <h2>conceptos basicos</h2>
       <Router>
         <MenuConceptos />
