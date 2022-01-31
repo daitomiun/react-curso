@@ -1,0 +1,16 @@
+import Message from "./Message"
+import SongArtist from "./SongArtist"
+import SongLirycs from "./SongLirycs"
+
+const SongDetails=({search,lyric,bio})=>{
+
+    if(!lyric||!bio)return null;
+    return(
+        <>
+            {lyric.error||lyric.err || lyric.name ==="abortError"?(<Message msg={`Error: no existe la cancion <em> "${search.song}"<em/>`} bgColor="#dc3545"/>):(<SongLirycs title={search.song} lyrics={lyric.lyrics}/>)}
+            {bio.artists? <SongArtist artist={bio.artists[0]}/>:<Message  msg={`Error: no existe el interprete <em> "${search.artist}"<em/>`} bgColor="#dc3545"/>}  
+        </>
+    )
+}
+
+export default SongDetails

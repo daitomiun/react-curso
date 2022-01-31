@@ -1,4 +1,4 @@
-import { Route, Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
 const PrivateRoute = (props) => {
   const auth = true; // determine if authorized, from context or however you're doing it

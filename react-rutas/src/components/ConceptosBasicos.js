@@ -1,7 +1,6 @@
 import {
   BrowserRouter as Router,
   HashRouter,
-  Link,
   Navigate,
   Route,
   Routes,
@@ -24,12 +23,30 @@ const ConceptosBasicos = () => {
     <div>
       <h2>hash router</h2>
       <HashRouter>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/acerca">acerca</Link>
-          <Link to="/contacto">contacto</Link>
-        </nav>
-        <Routes></Routes>
+        <MenuConceptos />
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/acerca" element={<Acerca />}></Route>
+          <Route path="/contacto" element={<Contacto />}></Route>
+          <Route path="/usuario/:username" element={<Usuario />}></Route>
+          <Route path="/productos" element={<Productos />}></Route>
+          <Route
+            path="/about"
+            element={<Navigate to="/acerca"></Navigate>}
+          ></Route>
+          <Route
+            path="/contact"
+            element={<Navigate to="/contacto"></Navigate>}
+          ></Route>
+          <Route path="/react/*" element={<ReactTopics />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          {/* <Route path="/dashboard" element={<Dashboard />}></Route> */}
+          <Route path="/dashboard" element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+          {/* <PrivateRoute exact path="/dashboard" element={<Dashboard />} /> */}
+          <Route path="*" element={<Error404 />}></Route>
+        </Routes>
       </HashRouter>
       <hr />
       <h2>conceptos basicos</h2>
