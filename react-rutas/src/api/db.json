@@ -2,7 +2,7 @@
   "santos": [
     {
       "id": 1,
-      "name": "seiya",
+      "name": "seiy",
       "constellation": "pegaso"
     },
     {
@@ -30,6 +30,21 @@
       "id": 6,
       "name": "seiya",
       "constellation": "nope"
+    },
+    {
+      "name": "proyecto de grado sprint 2",
+      "constellation": "nope",
+      "id": 1648734789950
+    },
+    {
+      "name": "seiya",
+      "constellation": "nope",
+      "id": 1648734866944
+    },
+    {
+      "name": "sprint backlog 2",
+      "constellation": "pegas",
+      "id": 1648735211916
     }
   ]
 }

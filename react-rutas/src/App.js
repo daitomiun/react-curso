@@ -14,9 +14,10 @@ function App() {
         documentacion
       </a>
       <SongSearch />
-      <CrudApi />
       <hr />
-      <ConceptosBasicos />
+      {/* <CrudApi /> */}
+      <hr />
+      {/* <ConceptosBasicos /> */}
     </div>
   );
 }

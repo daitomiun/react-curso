@@ -1,75 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import { helpHttp } from '../helpers/helpHttp';
-import Loader from './Loader';
-import SongDetails from './SongDetails';
-import Songform from './Songform';
+import React, { useState, useEffect } from "react";
+import { HashRouter, NavLink, Route, Router, Routes } from "react-router-dom";
+import { helpHttp } from "../helpers/helpHttp";
+import Error404 from "../pages/Error404";
+import SongPage from "../pages/SongPage";
+import Loader from "./Loader";
+import SongDetails from "./SongDetails";
+import Songform from "./Songform";
+import SongTable from "./SongTable";
 
+let mySongsInit = JSON.parse(localStorage.getItem("mySongs")) || [];
 
+const SongSearch = () => {
+  const [search, setSearch] = useState(null);
+  const [lyric, setLyric] = useState(null);
+  const [bio, setBio] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [mySongs, setMySongs] = useState(mySongsInit);
 
-const SongSearch =()=>{
+  useEffect(() => {
+    if (search === null) return;
 
-    const[search, setSearch]=useState(null);
-    const[lyric, setLyric]=useState(null);
-    const[bio, setBio]=useState(null);
-    const[loading, setLoading]=useState(false);
+    const fetchData = async () => {
+      const { artist, song } = search;
 
+      let artistUrl = `https://www.theaudiodb.com/api/v1/json/2/search.php?s=${artist}`;
+      let songUrl = `https://api.lyrics.ovh/v1/${artist}/${song}`;
 
-    useEffect(()=>{
-        if(search===null)return;
+      console.log(artistUrl, songUrl);
 
-        const fetchData = async ()=>{
-            const{artist, song}=search;
+      setLoading(true);
 
-            let artistUrl=`https://www.theaudiodb.com/api/v1/json/1/search.php?s=${artist}`
-            let songUrl=`https://api.lyrics.ovh/v1/${artist}/${song}`
+      const [artistRes, songRes] = await Promise.all([
+        helpHttp().get(artistUrl),
+        helpHttp().get(songUrl),
+      ]);
+      // console.log(artistRes, songRes)
 
-            console.log(artistUrl, songUrl)
+      setBio(artistRes);
+      setLyric(songRes);
+      setLoading(false);
+    };
+    fetchData();
 
-            setLoading(true);
+    localStorage.setItem("mySongs", JSON.stringify(mySongs));
+    console.log(localStorage);
+  }, [search, mySongs]);
 
-            const [artistRes, songRes]= await Promise.all([helpHttp().get(artistUrl), helpHttp().get(songUrl),])
-            // console.log(artistRes, songRes)
-            
+  const handleSearch = (data) => {
+    // console.log(data)
+    setSearch(data);
+  };
 
-            setBio(artistRes)
-            setLyric(songRes)
-            setLoading(false);
-
-
-        }
-        fetchData()
-    },[search])
-
-    const handleSearch= (data)=>{
-        // console.log(data)
-        setSearch(data)
+  const handleSaveSong = () => {
+    alert("guardando cancion en favoritos");
+    let currentSong = {
+      search,
+      lyric,
+      bio,
+    };
+    let songs = [...mySongs, currentSong];
+    setMySongs(songs);
+    setSearch(null);
+    localStorage.setItem("mySongs", JSON.stringify(songs));
+    console.log("save song", localStorage);
+  };
+  const handleDeleteSong = (id) => {
+    // alert(`eliminando cancion con id: ${id}`);
+    let isDelete = window.confirm(
+      `¿estas seguro de eliminar la cancion con el id "${id}"`
+    );
+    if (isDelete) {
+      let songs = mySongs.filter((el, index) => index !== id);
+      setMySongs(songs);
+      localStorage.setItem("mySongs", JSON.stringify(songs));
     }
+  };
+  return (
+    <div>
+      <HashRouter basename="canciones">
+        <header>
+          <h2>song search</h2>
+          <NavLink to="/">home</NavLink>
+        </header>
+        {loading && <Loader />}
+        <article className="grid-1-2">
+          <Routes>
+            <Route>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Songform
+                      handleSearch={handleSearch}
+                      handleSaveSong={handleSaveSong}
+                    />
+                    <SongTable
+                      mySongs={mySongs}
+                      handleDeleteSong={handleDeleteSong}
+                    />
+                    {search && !loading && (
+                      <SongDetails search={search} lyric={lyric} bio={bio} />
+                    )}
+                  </>
+                }
+              ></Route>
+              <Route
+                path="/:id"
+                element={<SongPage mySongs={mySongs} />}
+              ></Route>
+              <Route path="*" element={<Error404 />}></Route>
+            </Route>
+          </Routes>
+        </article>
+      </HashRouter>
+    </div>
+  );
+};
 
-    return(
-        <div>
-            <h2>SongSearch</h2>
-
-            <article className="grid-1-3">
-
-                <Songform handleSearch ={handleSearch}/>
-                {loading&&<Loader/>}
-                {search &&!loading &&(
-                    <SongDetails search={search} lyric={lyric} bio={bio}/>
-                )}
-            </article>
-
-
-        </div>
-    )
-}
-
-export default SongSearch
-
-
-
-
-
-
-
-
-
+export default SongSearch;
